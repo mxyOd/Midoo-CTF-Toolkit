@@ -289,6 +289,14 @@ GitHub: [@mxyOd](https://github.com/mxyOd)
 
 ---
 
+## ⚠️ Disclaimer
+
+> **Tools ini hanya untuk testing yang sah dan tujuan edukasi.**
+>
+> Penggunaan tanpa izin terhadap sistem yang tidak dimiliki atau tidak memiliki izin eksplisit adalah **ILEGAL**.
+>
+> Developer tidak bertanggung jawab atas penyalahgunaan tools ini.
+
 ## Lisensi
 
 Project ini saat ini dibuat untuk tujuan edukasi dan pembelajaran.
