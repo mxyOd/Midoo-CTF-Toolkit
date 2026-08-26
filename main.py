@@ -2,7 +2,6 @@ import os
 import subprocess
 import sys
 
-
 TOOLS = {
     "1": ("Crypto Tool", "crypto_tool.py"),
     "2": ("File Analyzer", "file_analyzer.py"),
@@ -11,6 +10,7 @@ TOOLS = {
     "5": ("Hash Analyzer", "hash_analyzer.py"),
     "6": ("JWT Analyzer", "jwt_analyzer.py"),
     "7": ("Web Recon", "web_recon.py"),
+    "8": ("Stego Analyzer", "stego_analyzer.py"),
 }
 
 
@@ -30,10 +30,7 @@ def run_tool(name, filename):
     print(f"[*] Membuka {name}...\n")
 
     try:
-        subprocess.run(
-            [sys.executable, filename],
-            check=False
-        )
+        subprocess.run([sys.executable, filename], check=False)
 
     except KeyboardInterrupt:
         print("\n[!] Tool dihentikan.")
@@ -57,15 +54,16 @@ def main():
        Cyber Security & CTF Toolkit
 =============================================
 
-  [1] Crypto Tool
-  [2] File Analyzer
-  [3] Network Analyzer
-  [4] PCAP Analyzer
-  [5] Hash Analyzer
-  [6] JWT Analyzer
-  [7] Web Recon
+    [1] Crypto Tool
+    [2] File Analyzer
+    [3] Network Analyzer
+    [4] PCAP Analyzer
+    [5] Hash Analyzer
+    [6] JWT Analyzer
+    [7] Web Recon
+    [8] Stego Analyzer
 
-  [8] Exit
+    [9] Exit
 
 =============================================
 """)

@@ -343,7 +343,7 @@ def main():
 
         print("""
 ========================================
-          Midoo PCAP Analyzer
+        Midoo PCAP Analyzer
 ========================================
 1. PCAP Information
 2. Packet Summary
