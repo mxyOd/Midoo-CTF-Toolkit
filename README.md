@@ -136,6 +136,12 @@ Jalankan:
 python main.py
 ```
 
+Update:
+
+```bash
+git pull
+```
+
 ---
 
 ## Kebutuhan
