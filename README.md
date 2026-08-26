@@ -1,8 +1,8 @@
 # Midoo CTF Toolkit
 
-**Midoo CTF Toolkit** adalah toolkit modular berbasis Python yang dibuat untuk membantu proses belajar **Cyber Security, Capture The Flag (CTF), Digital Forensics, dan analisis keamanan**.
+**Midoo CTF Toolkit** adalah toolkit modular berbasis Python yang dibuat untuk membantu proses belajar **Cyber Security, Capture The Flag (CTF), Digital Forensics, Network Analysis, dan Web Security**.
 
-Toolkit ini menggabungkan beberapa tools sederhana dalam satu launcher sehingga lebih mudah digunakan saat mengerjakan challenge CTF.
+Toolkit ini menggabungkan berbagai tools sederhana dalam satu launcher sehingga lebih mudah digunakan saat mengerjakan challenge CTF.
 
 ---
 
@@ -101,6 +101,19 @@ Toolkit ini menggabungkan beberapa tools sederhana dalam satu launcher sehingga 
 - Analisis query
 - Deteksi parameter yang umum digunakan dalam pengujian keamanan
 
+### 🌍 HTTP Analysis
+
+- Analisis URL
+- Request Headers
+- Response Headers
+- Status Code
+- Informasi Redirect
+- Cookies
+- Content-Type
+- Response Preview
+- Security Headers
+- TLS Information
+
 ---
 
 ## Instalasi
@@ -159,8 +172,9 @@ Kemudian akan muncul menu utama:
   [7] Web Recon
   [8] Stego Analyzer
   [9] URL Analyzer
+  [10] HTTP Analyzer
 
-  [10] Exit
+  [11] Exit
 
 =============================================
 ```
@@ -184,7 +198,8 @@ Midoo-CTF-Toolkit/
 ├── jwt_analyzer.py
 ├── web_recon.py
 ├── stego_analyzer.py
-└── url_analyzer.py
+├── url_analyzer.py
+└── http_analyzer.py
 ```
 
 ---
@@ -203,46 +218,38 @@ Midoo-CTF-Toolkit/
 | `web_recon.py` | Information gathering pada website |
 | `stego_analyzer.py` | Analisis steganografi |
 | `url_analyzer.py` | Analisis URL dan parameter |
+| `http_analyzer.py` | Analisis HTTP request dan response |
 
 ---
 
 ## Contoh Alur CTF
 
-Toolkit ini dapat digunakan sesuai jenis evidence atau challenge yang ditemukan.
+Toolkit dapat digunakan sesuai jenis evidence atau challenge yang ditemukan.
 
 ```text
-            Evidence
-                │
-                ▼
-        ┌───────────────┐
-        │ File Analyzer │
-        └───────┬───────┘
-                │
-                ▼
-        ┌───────────────┐
-        │ Hash Analyzer │
-        └───────┬───────┘
-                │
-                ▼
-        ┌────────────────┐
-        │ Stego Analyzer │
-        └───────┬────────┘
-                │
-                ▼
-        ┌────────────────┐
-        │ PCAP Analyzer  │
-        └───────┬────────┘
-                │
-                ▼
-        ┌────────────────┐
-        │ URL Analyzer   │
-        └───────┬────────┘
-                │
-                ▼
-          Web Recon
-                │
-                ▼
-             Flag
+                    Evidence
+                       │
+          ┌────────────┴────────────┐
+          ▼                         ▼
+   File Analyzer              PCAP Analyzer
+          │                         │
+          ▼                         ▼
+   Hash Analyzer             Network Analysis
+          │
+          ▼
+   Stego Analyzer
+          │
+          ▼
+     URL Analyzer
+          │
+          ▼
+     HTTP Analyzer
+          │
+          ▼
+       Web Recon
+          │
+          ▼
+         Flag
 ```
 
 Tidak semua challenge membutuhkan seluruh tahapan tersebut. Gunakan modul sesuai kebutuhan challenge.
@@ -258,6 +265,7 @@ Project ini dibuat sebagai sarana untuk:
 - Belajar Digital Forensics
 - Belajar Network Analysis
 - Belajar Web Security
+- Belajar analisis file dan traffic
 - Membuat tools keamanan sederhana dengan Python
 - Eksperimen dan pengembangan tools pribadi
 
