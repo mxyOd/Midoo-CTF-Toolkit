@@ -12,6 +12,7 @@ TOOLS = {
     "7": ("Web Recon", "web_recon.py"),
     "8": ("Stego Analyzer", "stego_analyzer.py"),
     "9": ("URL Analyzer", "url_analyzer.py"),
+    "10": ("HTTP Analyzer", "http_analyzer.py"),
 }
 
 
@@ -50,9 +51,7 @@ def main():
 
         print("""
 =============================================
-              Midoo CTF Toolkit
-=============================================
-       Cyber Security & CTF Toolkit
+            Midoo CTF Toolkit
 =============================================
 
     [1] Crypto Tool
@@ -64,15 +63,16 @@ def main():
     [7] Web Recon
     [8] Stego Analyzer
     [9] URL Analyzer
+    [10] HTTP Analyzer
     
-    [10] Exit
+    [11] Exit
 
 =============================================
 """)
 
         pilihan = input("Midoo > ").strip()
 
-        if pilihan == "10":
+        if pilihan == "11":
             clear_screen()
             print("Midoo CTF Toolkit terminated.")
             break
