@@ -70,7 +70,7 @@ def main():
 
         pilihan = input("Midoo > ").strip()
 
-        if pilihan == "8":
+        if pilihan == "9":
             clear_screen()
             print("Midoo CTF Toolkit terminated.")
             break
