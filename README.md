@@ -1,14 +1,15 @@
 # Midoo CTF Toolkit
 
-A modular cybersecurity and Capture The Flag (CTF) toolkit written in Python.
+**Midoo CTF Toolkit** adalah toolkit modular berbasis Python yang dibuat untuk membantu proses belajar **Cyber Security, Capture The Flag (CTF), Digital Forensics, dan analisis keamanan**.
 
-Designed for CTF competitions, cybersecurity learning, digital forensics, and authorized security testing.
+Toolkit ini menggabungkan beberapa tools sederhana dalam satu launcher sehingga lebih mudah digunakan saat mengerjakan challenge CTF.
 
 ---
 
-## Features
+## Fitur
 
-### Cryptography
+### 🔐 Kriptografi
+
 - Base64
 - Hex
 - Binary
@@ -17,95 +18,106 @@ Designed for CTF competitions, cybersecurity learning, digital forensics, and au
 - Atbash
 - XOR
 
-### Digital Forensics
-- File information
+### 🔎 Digital Forensics
+
+- Informasi file
 - Magic bytes
-- Entropy analysis
-- File hashing
+- Analisis entropy
+- MD5
+- SHA1
+- SHA256
 - Printable strings
 
-### Network Analysis
-- IP information
-- CIDR analysis
-- DNS lookup
+### 🌐 Network Analysis
+
+- Informasi IP
+- CIDR Calculator
+- DNS Lookup
 - Reverse DNS
-- Connectivity check
-- Port checking
+- Connectivity Check
+- Port Check
 
-### PCAP Analysis
-- Packet analysis
-- Protocol statistics
-- IP statistics
-- Port statistics
-- DNS analysis
-- HTTP analysis
-- String and flag search
+### 📡 PCAP Analysis
 
-### Hash Analysis
+- Packet Summary
+- Statistik protokol
+- Statistik IP
+- Statistik port
+- DNS Queries
+- HTTP Requests
+- Pencarian string
+- Pencarian flag
+
+### 🔑 Hash Analysis
+
 - MD5
 - SHA1
 - SHA256
 - SHA512
-- File hashing
-- Hash comparison
-- Hash identification
+- Hash file
+- Perbandingan hash
+- Identifikasi hash
 
-### JWT Analysis
-- JWT structure
-- Header decoding
-- Payload decoding
-- Signature inspection
-- Claims inspection
-- Expiration checking
+### 🎫 JWT Analysis
 
-### Web Recon
-- HTTP headers
-- HTTP status code
-- DNS information
+- Analisis struktur JWT
+- Decode Header
+- Decode Payload
+- Analisis Signature
+- Analisis Claims
+- Pemeriksaan Expiration
+
+### 🕵️ Web Recon
+
+- HTTP Headers
+- HTTP Status Code
+- DNS Information
 - robots.txt
 - sitemap.xml
-- TLS information
-- Page title
-- Technology hints
+- TLS Information
+- Page Title
+- Technology Hints
 
-### Steganography
-- Image information
-- PNG metadata
+### 🖼️ Steganography
+
+- Informasi gambar
+- Metadata PNG
 - Printable strings
-- PNG chunk analysis
-- Trailing data detection
-- Hidden flag search
-- Basic LSB analysis
-- Hex preview
+- Analisis PNG chunks
+- Deteksi trailing data
+- Pencarian flag tersembunyi
+- Analisis dasar LSB
+- Hex Preview
 
-### URL Analysis
-- URL parsing
-- Parameter extraction
-- URL encoding
-- URL decoding
-- URL normalization
-- Domain information
-- Path analysis
-- Query analysis
-- Suspicious parameter hints
+### 🔗 URL Analysis
+
+- Parsing URL
+- Ekstraksi parameter
+- URL Encode
+- URL Decode
+- Normalisasi URL
+- Informasi domain
+- Analisis path
+- Analisis query
+- Deteksi parameter yang umum digunakan dalam pengujian keamanan
 
 ---
 
-## Installation
+## Instalasi
 
-Clone the repository:
+Clone repository:
 
 ```bash
 git clone https://github.com/mxyOd/Midoo-CTF-Toolkit.git
 ```
 
-Enter the project directory:
+Masuk ke folder:
 
 ```bash
 cd Midoo-CTF-Toolkit
 ```
 
-Run the toolkit:
+Jalankan:
 
 ```bash
 python main.py
@@ -113,25 +125,25 @@ python main.py
 
 ---
 
-## Requirements
+## Kebutuhan
 
 - Python 3.x
 
-Most modules use the Python standard library.
+Sebagian besar fitur menggunakan **Python Standard Library**, sehingga tidak membutuhkan banyak dependency tambahan.
 
-Some network and PCAP functionality may require external tools depending on the implementation.
+Untuk beberapa fitur tertentu, mungkin diperlukan tools eksternal seperti **TShark**.
 
 ---
 
-## Usage
+## Cara Menggunakan
 
-Run the main launcher:
+Jalankan:
 
 ```bash
 python main.py
 ```
 
-The main menu provides access to all available modules:
+Kemudian akan muncul menu utama:
 
 ```text
 =============================================
@@ -153,11 +165,11 @@ The main menu provides access to all available modules:
 =============================================
 ```
 
-Select a module by entering its corresponding number.
+Masukkan nomor sesuai dengan tool yang ingin digunakan.
 
 ---
 
-## Project Structure
+## Struktur Project
 
 ```text
 Midoo-CTF-Toolkit/
@@ -177,74 +189,87 @@ Midoo-CTF-Toolkit/
 
 ---
 
-## Modules
+## Modul
 
-| Module | Description |
+| File | Fungsi |
 |---|---|
-| `crypto_tool.py` | Encoding and classical cipher utilities |
-| `file_analyzer.py` | File and forensic analysis |
-| `network_analyzer.py` | Basic network analysis |
-| `pcap_analyzer.py` | PCAP and packet analysis |
-| `hash_analyzer.py` | Hash generation and identification |
-| `jwt_analyzer.py` | JWT inspection and claim analysis |
-| `web_recon.py` | Basic web reconnaissance |
-| `stego_analyzer.py` | Image and steganography analysis |
-| `url_analyzer.py` | URL and parameter analysis |
-| `main.py` | Main toolkit launcher |
+| `main.py` | Launcher utama toolkit |
+| `crypto_tool.py` | Encoding dan cipher sederhana |
+| `file_analyzer.py` | Analisis file dan forensics |
+| `network_analyzer.py` | Analisis dasar jaringan |
+| `pcap_analyzer.py` | Analisis file PCAP |
+| `hash_analyzer.py` | Pembuatan dan analisis hash |
+| `jwt_analyzer.py` | Analisis token JWT |
+| `web_recon.py` | Information gathering pada website |
+| `stego_analyzer.py` | Analisis steganografi |
+| `url_analyzer.py` | Analisis URL dan parameter |
 
 ---
 
-## Example
+## Contoh Alur CTF
 
-Clone and run:
-
-```bash
-git clone https://github.com/mxyOd/Midoo-CTF-Toolkit.git
-cd Midoo-CTF-Toolkit
-python main.py
-```
-
-Example workflow:
+Toolkit ini dapat digunakan sesuai jenis evidence atau challenge yang ditemukan.
 
 ```text
-Evidence
-   ↓
-File Analyzer
-   ↓
-Hash Analyzer
-   ↓
-Stego Analyzer
-   ↓
-Network / PCAP Analyzer
-   ↓
-URL Analyzer
-   ↓
-Web Recon
-   ↓
-CTF Flag
+            Evidence
+                │
+                ▼
+        ┌───────────────┐
+        │ File Analyzer │
+        └───────┬───────┘
+                │
+                ▼
+        ┌───────────────┐
+        │ Hash Analyzer │
+        └───────┬───────┘
+                │
+                ▼
+        ┌────────────────┐
+        │ Stego Analyzer │
+        └───────┬────────┘
+                │
+                ▼
+        ┌────────────────┐
+        │ PCAP Analyzer  │
+        └───────┬────────┘
+                │
+                ▼
+        ┌────────────────┐
+        │ URL Analyzer   │
+        └───────┬────────┘
+                │
+                ▼
+          Web Recon
+                │
+                ▼
+             Flag
 ```
+
+Tidak semua challenge membutuhkan seluruh tahapan tersebut. Gunakan modul sesuai kebutuhan challenge.
 
 ---
 
-## Educational Purpose
+## Tujuan Project
 
-Midoo CTF Toolkit is intended to support:
+Project ini dibuat sebagai sarana untuk:
 
-- Capture The Flag competitions
-- Cybersecurity education
-- Digital forensics practice
-- Security research in authorized environments
-- Personal cybersecurity labs
+- Belajar Cyber Security
+- Latihan CTF
+- Belajar Digital Forensics
+- Belajar Network Analysis
+- Belajar Web Security
+- Membuat tools keamanan sederhana dengan Python
+- Eksperimen dan pengembangan tools pribadi
 
 ---
 
 ## Disclaimer
 
-This project is intended for educational purposes, CTF competitions, and authorized security testing only.
+Midoo CTF Toolkit dibuat untuk **tujuan edukasi, kompetisi CTF, lab pribadi, dan pengujian keamanan yang telah mendapatkan izin**.
 
-Do not use this toolkit against systems, networks, applications, or data without proper authorization.
+Jangan gunakan tools ini terhadap sistem, jaringan, aplikasi, atau data tanpa izin.
 
-The author is not responsible for misuse of this software.
+Penggunaan toolkit sepenuhnya menjadi tanggung jawab pengguna.
 
 ---
 
@@ -256,6 +281,6 @@ GitHub: [@mxyOd](https://github.com/mxyOd)
 
 ---
 
-## License
+## Lisensi
 
-This project is currently provided for educational purposes.
+Project ini saat ini dibuat untuk tujuan edukasi dan pembelajaran.
