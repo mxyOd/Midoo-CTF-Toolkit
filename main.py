@@ -1,4 +1,3 @@
-import argparse
 import os
 import subprocess
 import sys
@@ -21,6 +20,13 @@ TOOLS = {
 }
 
 
+CLI_TOOLS = {
+    "1": ("VulnScope", "vulnscope.py"),
+    "2": ("API Tester", "api_tester.py"),
+    "3": ("Disk Forensics", "disk_forensics.py"),
+}
+
+
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -29,10 +35,17 @@ def wait_enter():
     input("\nTekan Enter untuk kembali...")
 
 
-def run_tool(name, filename):
+def check_file(filename):
     if not os.path.exists(filename):
         print(f"\n[!] File tidak ditemukan: {filename}")
         wait_enter()
+        return False
+
+    return True
+
+
+def run_tool(name, filename):
+    if not check_file(filename):
         return
 
     clear_screen()
@@ -46,8 +59,10 @@ def run_tool(name, filename):
             [sys.executable, filename],
             check=False
         )
+
     except KeyboardInterrupt:
         print("\n[!] Tool dihentikan.")
+
     except Exception as error:
         print(f"\n[!] Error: {error}")
 
@@ -57,9 +72,7 @@ def run_tool(name, filename):
 def run_vulnscope():
     filename = TOOLS["11"][1]
 
-    if not os.path.exists(filename):
-        print(f"\n[!] File tidak ditemukan: {filename}")
-        wait_enter()
+    if not check_file(filename):
         return
 
     clear_screen()
@@ -75,7 +88,9 @@ def run_vulnscope():
         wait_enter()
         return
 
-    output = input("Nama output JSON [hasil.json]: ").strip()
+    output = input(
+        "Nama output JSON [hasil.json]: "
+    ).strip()
 
     if not output:
         output = "hasil.json"
@@ -94,8 +109,10 @@ def run_vulnscope():
             ],
             check=False
         )
+
     except KeyboardInterrupt:
         print("\n[!] VulnScope dihentikan.")
+
     except Exception as error:
         print(f"\n[!] Error: {error}")
 
@@ -105,9 +122,7 @@ def run_vulnscope():
 def run_disk_forensics():
     filename = TOOLS["13"][1]
 
-    if not os.path.exists(filename):
-        print(f"\n[!] File tidak ditemukan: {filename}")
-        wait_enter()
+    if not check_file(filename):
         return
 
     clear_screen()
@@ -128,7 +143,9 @@ def run_disk_forensics():
         wait_enter()
         return
 
-    output = input("Nama report JSON [hasil.json]: ").strip()
+    output = input(
+        "Nama report JSON [hasil.json]: "
+    ).strip()
 
     if not output:
         output = "hasil.json"
@@ -147,12 +164,72 @@ def run_disk_forensics():
             ],
             check=False
         )
+
     except KeyboardInterrupt:
         print("\n[!] Disk Forensics dihentikan.")
+
     except Exception as error:
         print(f"\n[!] Error: {error}")
 
     wait_enter()
+
+
+def show_cli_help():
+    while True:
+        clear_screen()
+
+        print("""
+=============================================
+             Midoo Tool Help
+=============================================
+
+    [1] VulnScope
+    [2] API Tester
+    [3] Disk Forensics
+
+    [4] Kembali
+
+=============================================
+""")
+
+        pilihan = input("Midoo Help > ").strip()
+
+        if pilihan == "4":
+            break
+
+        if pilihan not in CLI_TOOLS:
+            print("\n[!] Pilihan tidak valid.")
+            wait_enter()
+            continue
+
+        name, filename = CLI_TOOLS[pilihan]
+
+        if not check_file(filename):
+            continue
+
+        clear_screen()
+
+        print("=============================================")
+        print(f"             {name} Help")
+        print("=============================================\n")
+
+        try:
+            subprocess.run(
+                [
+                    sys.executable,
+                    filename,
+                    "-h"
+                ],
+                check=False
+            )
+
+        except KeyboardInterrupt:
+            print("\n[!] Help dihentikan.")
+
+        except Exception as error:
+            print(f"\n[!] Error: {error}")
+
+        wait_enter()
 
 
 def show_menu():
@@ -175,50 +252,50 @@ def show_menu():
     [12] API Tester
     [13] Disk Forensics
 
-    [14] Exit
+    [14] Tool Help
+    [15] Exit
 
 =============================================
 """)
 
 
-def show_cli_tools():
-    print("""
-Midoo CTF Toolkit - CLI Tools
-
-VulnScope:
-    python vulnscope.py -h
-
-Disk Forensics:
-    python disk_forensics.py -h
-
-API Tester:
-    python api_tester.py -h
-""")
-
-
 def main():
+
     while True:
+
         clear_screen()
         show_menu()
 
         pilihan = input("Midoo > ").strip()
 
-        if pilihan == "14":
-            clear_screen()
-            print("Midoo CTF Toolkit terminated.")
-            break
-
+        # VulnScope
         if pilihan == "11":
             run_vulnscope()
             continue
 
+        # Disk Forensics
         if pilihan == "13":
             run_disk_forensics()
             continue
 
+        # Tool Help
+        if pilihan == "14":
+            show_cli_help()
+            continue
+
+        # Exit
+        if pilihan == "15":
+            clear_screen()
+            print("Midoo CTF Toolkit terminated.")
+            break
+
+        # Tool biasa
         if pilihan in TOOLS:
+
             name, filename = TOOLS[pilihan]
+
             run_tool(name, filename)
+
             continue
 
         print("\n[!] Pilihan tidak valid.")
