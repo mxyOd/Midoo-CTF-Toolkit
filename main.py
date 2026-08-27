@@ -17,6 +17,7 @@ TOOLS = {
     "11": ("VulnScope", "vulnscope.py"),
     "12": ("API Tester", "api_tester.py"),
     "13": ("Disk Forensics", "disk_forensics.py"),
+    "14": ("Pwn Toolkit", "pwn_tool.py"),
 }
 
 
@@ -24,6 +25,7 @@ CLI_TOOLS = {
     "1": ("VulnScope", "vulnscope.py"),
     "2": ("API Tester", "api_tester.py"),
     "3": ("Disk Forensics", "disk_forensics.py"),
+    "4": ("Pwn Toolkit", "pwn_tool.py"),
 }
 
 
@@ -176,6 +178,7 @@ def run_disk_forensics():
 
 def show_cli_help():
     while True:
+
         clear_screen()
 
         print("""
@@ -186,15 +189,16 @@ def show_cli_help():
     [1] VulnScope
     [2] API Tester
     [3] Disk Forensics
+    [4] Pwn Toolkit
 
-    [4] Kembali
+    [5] Kembali
 
 =============================================
 """)
 
         pilihan = input("Midoo Help > ").strip()
 
-        if pilihan == "4":
+        if pilihan == "5":
             break
 
         if pilihan not in CLI_TOOLS:
@@ -251,9 +255,10 @@ def show_menu():
     [11] VulnScope
     [12] API Tester
     [13] Disk Forensics
+    [14] Pwn Toolkit
 
-    [14] Tool Help
-    [15] Exit
+    [15] Tool Help
+    [16] Exit
 
 =============================================
 """)
@@ -279,12 +284,12 @@ def main():
             continue
 
         # Tool Help
-        if pilihan == "14":
+        if pilihan == "15":
             show_cli_help()
             continue
 
         # Exit
-        if pilihan == "15":
+        if pilihan == "16":
             clear_screen()
             print("Midoo CTF Toolkit terminated.")
             break
