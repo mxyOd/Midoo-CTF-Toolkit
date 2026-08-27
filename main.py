@@ -16,6 +16,7 @@ TOOLS = {
     "10": ("HTTP Analyzer", "http_analyzer.py"),
     "11": ("VulnScope", "vulnscope.py"),
     "12": ("API Tester", "api_tester.py"),
+    "13": ("Disk Forensics", "disk_forensics.py"),
 }
 
 
@@ -128,8 +129,9 @@ def show_menu():
     [10] HTTP Analyzer
     [11] VulnScope
     [12] API Tester
-
-    [13] Exit
+    [13] Disk Forensics
+    
+    [14] Exit
 
 =============================================
 """)
