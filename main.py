@@ -15,6 +15,7 @@ TOOLS = {
     "9": ("URL Analyzer", "url_analyzer.py"),
     "10": ("HTTP Analyzer", "http_analyzer.py"),
     "11": ("VulnScope", "vulnscope.py"),
+    "12": ("API Tester", "api_tester.py"),
 }
 
 
@@ -126,8 +127,9 @@ def show_menu():
     [9]  URL Analyzer
     [10] HTTP Analyzer
     [11] VulnScope
+    [12] API Tester
 
-    [12] Exit
+    [13] Exit
 
 =============================================
 """)
@@ -144,7 +146,7 @@ def main():
         pilihan = input("Midoo > ").strip()
 
         # Exit
-        if pilihan == "12":
+        if pilihan == "13":
             clear_screen()
             print("Midoo CTF Toolkit terminated.")
             break
