@@ -27,6 +27,8 @@ TOOLS = {
     "20": ("OSINT Toolkit", "osint_tool.py"),
     "21": ("Cloud Security Toolkit", "cloud_security_tool.py"),
     "22": ("Container Security Toolkit", "container_security_tool.py"),
+    "23": ("Mobile Security Toolkit", "mobile_security_tool.py"),
+    "24": ("Database Forensics Toolkit", "database_forensics_tool.py"),
 }
 
 
@@ -41,6 +43,10 @@ CLI_TOOLS = {
     "8": ("Log Analyzer", "log_analyzer.py"),
     "9": ("Wordlist Toolkit", "wordlist_tool.py"),
     "10": ("OSINT Toolkit", "osint_tool.py"),
+    "11": ("Cloud Security Toolkit", "cloud_security_tool.py"),
+    "12": ("Container Security Toolkit", "container_security_tool.py"),
+    "13": ("Mobile Security Toolkit", "mobile_security_tool.py"),
+    "14": ("Database Forensics Toolkit", "database_forensics_tool.py"),
 }
 
 
@@ -227,6 +233,10 @@ def show_cli_help():
     [8]  Log Analyzer
     [9]  Wordlist Toolkit
     [10] OSINT Toolkit
+    [11] Cloud Security Toolkit
+    [12] Container Security Toolkit
+    [13] Mobile Security Toolkit
+    [14] Database Forensics Toolkit
 
     [0]  Kembali
 
@@ -311,8 +321,10 @@ def show_menu():
     [20] OSINT Toolkit
     [21] Cloud Security Toolkit
     [22] Container Security Toolkit
+    [23] Mobile Security Toolkit
+    [24] Database Forensics Toolkit
 
-    [23] Tool Help
+    [25] Tool Help
     [0]  Exit
 
 =============================================
@@ -431,8 +443,24 @@ def main():
             )
             continue
 
-        # Tool Help
+        # Mobile Security Toolkit
         if pilihan == "23":
+            run_tool(
+                "Mobile Security Toolkit",
+                TOOLS["23"][1]
+            )
+            continue
+
+        # Database Forensics Toolkit
+        if pilihan == "24":
+            run_tool(
+                "Database Forensics Toolkit",
+                TOOLS["24"][1]
+            )
+            continue
+
+        # Tool Help
+        if pilihan == "25":
             show_cli_help()
             continue
 
