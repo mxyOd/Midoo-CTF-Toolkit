@@ -24,6 +24,7 @@ TOOLS = {
     "18": ("Log Analyzer", "log_analyzer.py"),
     "19": ("Wordlist Toolkit", "wordlist_tool.py"),
     "20": ("OSINT Toolkit", "osint_tool.py"),
+    "21": ("Cloud Security Toolkit", "cloud_security_tool.py"),
 }
 
 
@@ -65,7 +66,7 @@ def run_tool(name, filename):
     clear_screen()
 
     print("=============================================")
-    print(f"             Midoo {name}")
+    print(f"              Midoo {name}")
     print("=============================================\n")
 
     try:
@@ -92,7 +93,7 @@ def run_file_tool(number, title, argument):
     clear_screen()
 
     print("=============================================")
-    print(f"             Midoo {title}")
+    print(f"              Midoo {title}")
     print("=============================================")
 
     target = input(
@@ -104,6 +105,7 @@ def run_file_tool(number, title, argument):
             f"\n[!] {argument.capitalize()} "
             "tidak boleh kosong."
         )
+
         wait_enter()
         return
 
@@ -111,6 +113,7 @@ def run_file_tool(number, title, argument):
         print(
             f"\n[!] File tidak ditemukan: {target}"
         )
+
         wait_enter()
         return
 
@@ -151,7 +154,7 @@ def run_vulnscope():
     clear_screen()
 
     print("=============================================")
-    print("             Midoo VulnScope")
+    print("              Midoo VulnScope")
     print("=============================================")
 
     target = input(
@@ -162,6 +165,7 @@ def run_vulnscope():
         print(
             "\n[!] Target tidak boleh kosong."
         )
+
         wait_enter()
         return
 
@@ -238,6 +242,7 @@ def show_cli_help():
             print(
                 "\n[!] Pilihan tidak valid."
             )
+
             wait_enter()
             continue
 
@@ -249,7 +254,7 @@ def show_cli_help():
         clear_screen()
 
         print("=============================================")
-        print(f"             {name} Help")
+        print(f"              {name} Help")
         print("=============================================\n")
 
         try:
@@ -291,6 +296,7 @@ def show_menu():
     [8]  Stego Analyzer
     [9]  URL Analyzer
     [10] HTTP Analyzer
+
     [11] VulnScope
     [12] API Tester
     [13] Disk Forensics
@@ -301,8 +307,9 @@ def show_menu():
     [18] Log Analyzer
     [19] Wordlist Toolkit
     [20] OSINT Toolkit
+    [21] Cloud Security Toolkit
 
-    [21] Tool Help
+    [22] Tool Help
     [0]  Exit
 
 =============================================
@@ -310,7 +317,9 @@ def show_menu():
 
 
 def main():
+
     while True:
+
         clear_screen()
         show_menu()
 
@@ -321,9 +330,11 @@ def main():
         # Exit
         if pilihan == "0":
             clear_screen()
+
             print(
                 "Midoo CTF Toolkit terminated."
             )
+
             break
 
         # VulnScope
@@ -387,10 +398,9 @@ def main():
 
         # Wordlist Toolkit
         if pilihan == "19":
-            run_file_tool(
-                "19",
+            run_tool(
                 "Wordlist Toolkit",
-                "wordlist"
+                TOOLS["19"][1]
             )
             continue
 
@@ -402,20 +412,34 @@ def main():
             )
             continue
 
-        # Tool Help
+        # Cloud Security Toolkit
         if pilihan == "21":
+            run_tool(
+                "Cloud Security Toolkit",
+                TOOLS["21"][1]
+            )
+            continue
+
+        # Tool Help
+        if pilihan == "22":
             show_cli_help()
             continue
 
         # Tool biasa
         if pilihan in TOOLS:
             name, filename = TOOLS[pilihan]
-            run_tool(name, filename)
+
+            run_tool(
+                name,
+                filename
+            )
+
             continue
 
         print(
             "\n[!] Pilihan tidak valid."
         )
+
         wait_enter()
 
 
