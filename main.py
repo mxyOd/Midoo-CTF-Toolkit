@@ -21,6 +21,7 @@ TOOLS = {
     "15": ("Reverse Engineering", "re_tool.py"),
     "16": ("Malware Analyzer", "malware_analyzer.py"),
     "17": ("Memory Forensics", "memory_forensics.py"),
+    "18": ("Log Analyzer", "log_analyzer.py"),
 }
 
 
@@ -32,6 +33,7 @@ CLI_TOOLS = {
     "5": ("Reverse Engineering", "re_tool.py"),
     "6": ("Malware Analyzer", "malware_analyzer.py"),
     "7": ("Memory Forensics", "memory_forensics.py"),
+    "8": ("Log Analyzer", "log_analyzer.py"),
 }
 
 
@@ -92,7 +94,10 @@ def run_file_tool(number, title, argument):
     target = input(f"\nMasukkan {argument}: ").strip()
 
     if not target:
-        print(f"\n[!] {argument.capitalize()} tidak boleh kosong.")
+        print(
+            f"\n[!] {argument.capitalize()} "
+            "tidak boleh kosong."
+        )
         wait_enter()
         return
 
@@ -189,15 +194,16 @@ def show_cli_help():
     [5] Reverse Engineering
     [6] Malware Analyzer
     [7] Memory Forensics
+    [8] Log Analyzer
 
-    [8] Kembali
+    [9] Kembali
 
 =============================================
 """)
 
         pilihan = input("Midoo Help > ").strip()
 
-        if pilihan == "8":
+        if pilihan == "9":
             break
 
         if pilihan not in CLI_TOOLS:
@@ -258,9 +264,10 @@ def show_menu():
     [15] Reverse Engineering
     [16] Malware Analyzer
     [17] Memory Forensics
+    [18] Log Analyzer
 
-    [18] Tool Help
-    [19] Exit
+    [19] Tool Help
+    [20] Exit
 
 =============================================
 """)
@@ -323,13 +330,22 @@ def main():
             )
             continue
 
-        # Tool Help
+        # Log Analyzer
         if pilihan == "18":
+            run_file_tool(
+                "18",
+                "Log Analyzer",
+                "log file"
+            )
+            continue
+
+        # Tool Help
+        if pilihan == "19":
             show_cli_help()
             continue
 
         # Exit
-        if pilihan == "19":
+        if pilihan == "20":
             clear_screen()
             print("Midoo CTF Toolkit terminated.")
             break
