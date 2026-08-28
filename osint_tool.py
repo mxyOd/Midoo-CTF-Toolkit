@@ -35,7 +35,7 @@ TOOLS = {
     },
     "6": {
         "name": "SpiderFoot",
-        "command": "sf.py",
+        "command": "spiderfoot",
         "description": "Automated OSINT reconnaissance"
     },
 }
