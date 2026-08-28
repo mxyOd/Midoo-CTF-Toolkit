@@ -22,6 +22,7 @@ TOOLS = {
     "16": ("Malware Analyzer", "malware_analyzer.py"),
     "17": ("Memory Forensics", "memory_forensics.py"),
     "18": ("Log Analyzer", "log_analyzer.py"),
+    "19": ("Wordlist Toolkit", "wordlist_tool.py"),
 }
 
 
@@ -34,6 +35,7 @@ CLI_TOOLS = {
     "6": ("Malware Analyzer", "malware_analyzer.py"),
     "7": ("Memory Forensics", "memory_forensics.py"),
     "8": ("Log Analyzer", "log_analyzer.py"),
+    "9": ("Wordlist Toolkit", "wordlist_tool.py"),
 }
 
 
@@ -215,6 +217,7 @@ def show_cli_help():
     [6] Malware Analyzer
     [7] Memory Forensics
     [8] Log Analyzer
+    [9] Wordlist Toolkit
 
     [0] Kembali
 
@@ -293,8 +296,9 @@ def show_menu():
     [16] Malware Analyzer
     [17] Memory Forensics
     [18] Log Analyzer
+    [19] Wordlist Toolkit
 
-    [19] Tool Help
+    [20] Tool Help
     [0]  Exit
 
 =============================================
@@ -377,8 +381,17 @@ def main():
             )
             continue
 
-        # Tool Help
+        # Wordlist Toolkit
         if pilihan == "19":
+            run_file_tool(
+                "19",
+                "Wordlist Toolkit",
+                "wordlist"
+            )
+            continue
+
+        # Tool Help
+        if pilihan == "20":
             show_cli_help()
             continue
 
