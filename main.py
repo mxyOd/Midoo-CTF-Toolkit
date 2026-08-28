@@ -91,7 +91,9 @@ def run_file_tool(number, title, argument):
     print(f"             Midoo {title}")
     print("=============================================")
 
-    target = input(f"\nMasukkan {argument}: ").strip()
+    target = input(
+        f"\nMasukkan {argument}: "
+    ).strip()
 
     if not target:
         print(
@@ -102,11 +104,15 @@ def run_file_tool(number, title, argument):
         return
 
     if not os.path.exists(target):
-        print(f"\n[!] File tidak ditemukan: {target}")
+        print(
+            f"\n[!] File tidak ditemukan: {target}"
+        )
         wait_enter()
         return
 
-    print(f"\n[*] Menjalankan {title}...\n")
+    print(
+        f"\n[*] Menjalankan {title}...\n"
+    )
 
     try:
         subprocess.run(
@@ -120,10 +126,14 @@ def run_file_tool(number, title, argument):
         )
 
     except KeyboardInterrupt:
-        print(f"\n[!] {title} dihentikan.")
+        print(
+            f"\n[!] {title} dihentikan."
+        )
 
     except Exception as error:
-        print(f"\n[!] Error: {error}")
+        print(
+            f"\n[!] Error: {error}"
+        )
 
     wait_enter()
 
@@ -140,10 +150,14 @@ def run_vulnscope():
     print("             Midoo VulnScope")
     print("=============================================")
 
-    target = input("\nMasukkan target: ").strip()
+    target = input(
+        "\nMasukkan target: "
+    ).strip()
 
     if not target:
-        print("\n[!] Target tidak boleh kosong.")
+        print(
+            "\n[!] Target tidak boleh kosong."
+        )
         wait_enter()
         return
 
@@ -154,7 +168,9 @@ def run_vulnscope():
     if not output:
         output = "hasil.json"
 
-    print("\n[*] Menjalankan VulnScope...\n")
+    print(
+        "\n[*] Menjalankan VulnScope...\n"
+    )
 
     try:
         subprocess.run(
@@ -170,10 +186,14 @@ def run_vulnscope():
         )
 
     except KeyboardInterrupt:
-        print("\n[!] VulnScope dihentikan.")
+        print(
+            "\n[!] VulnScope dihentikan."
+        )
 
     except Exception as error:
-        print(f"\n[!] Error: {error}")
+        print(
+            f"\n[!] Error: {error}"
+        )
 
     wait_enter()
 
@@ -196,18 +216,22 @@ def show_cli_help():
     [7] Memory Forensics
     [8] Log Analyzer
 
-    [9] Kembali
+    [0] Kembali
 
 =============================================
 """)
 
-        pilihan = input("Midoo Help > ").strip()
+        pilihan = input(
+            "Midoo Help > "
+        ).strip()
 
-        if pilihan == "9":
+        if pilihan == "0":
             break
 
         if pilihan not in CLI_TOOLS:
-            print("\n[!] Pilihan tidak valid.")
+            print(
+                "\n[!] Pilihan tidak valid."
+            )
             wait_enter()
             continue
 
@@ -233,10 +257,14 @@ def show_cli_help():
             )
 
         except KeyboardInterrupt:
-            print("\n[!] Help dihentikan.")
+            print(
+                "\n[!] Help dihentikan."
+            )
 
         except Exception as error:
-            print(f"\n[!] Error: {error}")
+            print(
+                f"\n[!] Error: {error}"
+            )
 
         wait_enter()
 
@@ -267,7 +295,7 @@ def show_menu():
     [18] Log Analyzer
 
     [19] Tool Help
-    [20] Exit
+    [0]  Exit
 
 =============================================
 """)
@@ -278,7 +306,17 @@ def main():
         clear_screen()
         show_menu()
 
-        pilihan = input("Midoo > ").strip()
+        pilihan = input(
+            "Midoo > "
+        ).strip()
+
+        # Exit
+        if pilihan == "0":
+            clear_screen()
+            print(
+                "Midoo CTF Toolkit terminated."
+            )
+            break
 
         # VulnScope
         if pilihan == "11":
@@ -344,19 +382,15 @@ def main():
             show_cli_help()
             continue
 
-        # Exit
-        if pilihan == "20":
-            clear_screen()
-            print("Midoo CTF Toolkit terminated.")
-            break
-
         # Tool biasa
         if pilihan in TOOLS:
             name, filename = TOOLS[pilihan]
             run_tool(name, filename)
             continue
 
-        print("\n[!] Pilihan tidak valid.")
+        print(
+            "\n[!] Pilihan tidak valid."
+        )
         wait_enter()
 
 
