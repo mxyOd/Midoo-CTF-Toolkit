@@ -19,6 +19,7 @@ TOOLS = {
     "13": ("Disk Forensics", "disk_forensics.py"),
     "14": ("Pwn Toolkit", "pwn_tool.py"),
     "15": ("Reverse Engineering", "re_tool.py"),
+    "16": ("Malware Analyzer", "malware_analyzer.py"),
 }
 
 
@@ -28,6 +29,7 @@ CLI_TOOLS = {
     "3": ("Disk Forensics", "disk_forensics.py"),
     "4": ("Pwn Toolkit", "pwn_tool.py"),
     "5": ("Reverse Engineering", "re_tool.py"),
+    "6": ("Malware Analyzer", "malware_analyzer.py"),
 }
 
 
@@ -66,6 +68,52 @@ def run_tool(name, filename):
 
     except KeyboardInterrupt:
         print("\n[!] Tool dihentikan.")
+
+    except Exception as error:
+        print(f"\n[!] Error: {error}")
+
+    wait_enter()
+
+
+def run_file_tool(number, title, argument):
+    filename = TOOLS[number][1]
+
+    if not check_file(filename):
+        return
+
+    clear_screen()
+
+    print("=============================================")
+    print(f"             Midoo {title}")
+    print("=============================================")
+
+    target = input(f"\nMasukkan {argument}: ").strip()
+
+    if not target:
+        print(f"\n[!] {argument.capitalize()} tidak boleh kosong.")
+        wait_enter()
+        return
+
+    if not os.path.exists(target):
+        print(f"\n[!] File tidak ditemukan: {target}")
+        wait_enter()
+        return
+
+    print(f"\n[*] Menjalankan {title}...\n")
+
+    try:
+        subprocess.run(
+            [
+                sys.executable,
+                filename,
+                "-f",
+                target
+            ],
+            check=False
+        )
+
+    except KeyboardInterrupt:
+        print(f"\n[!] {title} dihentikan.")
 
     except Exception as error:
         print(f"\n[!] Error: {error}")
@@ -123,156 +171,8 @@ def run_vulnscope():
     wait_enter()
 
 
-def run_disk_forensics():
-    filename = TOOLS["13"][1]
-
-    if not check_file(filename):
-        return
-
-    clear_screen()
-
-    print("=============================================")
-    print("          Midoo Disk Forensics")
-    print("=============================================")
-
-    image = input("\nMasukkan file image: ").strip()
-
-    if not image:
-        print("\n[!] File image tidak boleh kosong.")
-        wait_enter()
-        return
-
-    if not os.path.exists(image):
-        print(f"\n[!] File tidak ditemukan: {image}")
-        wait_enter()
-        return
-
-    output = input(
-        "Nama report JSON [hasil.json]: "
-    ).strip()
-
-    if not output:
-        output = "hasil.json"
-
-    print("\n[*] Menjalankan Disk Forensics...\n")
-
-    try:
-        subprocess.run(
-            [
-                sys.executable,
-                filename,
-                "-f",
-                image,
-                "-o",
-                output
-            ],
-            check=False
-        )
-
-    except KeyboardInterrupt:
-        print("\n[!] Disk Forensics dihentikan.")
-
-    except Exception as error:
-        print(f"\n[!] Error: {error}")
-
-    wait_enter()
-
-
-def run_pwn():
-    filename = TOOLS["14"][1]
-
-    if not check_file(filename):
-        return
-
-    clear_screen()
-
-    print("=============================================")
-    print("            Midoo Pwn Toolkit")
-    print("=============================================")
-
-    binary = input("\nMasukkan binary: ").strip()
-
-    if not binary:
-        print("\n[!] Binary tidak boleh kosong.")
-        wait_enter()
-        return
-
-    if not os.path.exists(binary):
-        print(f"\n[!] File tidak ditemukan: {binary}")
-        wait_enter()
-        return
-
-    print("\n[*] Menjalankan Pwn Toolkit...\n")
-
-    try:
-        subprocess.run(
-            [
-                sys.executable,
-                filename,
-                "-f",
-                binary
-            ],
-            check=False
-        )
-
-    except KeyboardInterrupt:
-        print("\n[!] Pwn Toolkit dihentikan.")
-
-    except Exception as error:
-        print(f"\n[!] Error: {error}")
-
-    wait_enter()
-
-
-def run_reverse_engineering():
-    filename = TOOLS["15"][1]
-
-    if not check_file(filename):
-        return
-
-    clear_screen()
-
-    print("=============================================")
-    print("      Midoo Reverse Engineering Toolkit")
-    print("=============================================")
-
-    binary = input("\nMasukkan binary: ").strip()
-
-    if not binary:
-        print("\n[!] Binary tidak boleh kosong.")
-        wait_enter()
-        return
-
-    if not os.path.exists(binary):
-        print(f"\n[!] File tidak ditemukan: {binary}")
-        wait_enter()
-        return
-
-    print("\n[*] Menjalankan Reverse Engineering Toolkit...\n")
-
-    try:
-        subprocess.run(
-            [
-                sys.executable,
-                filename,
-                "-f",
-                binary
-            ],
-            check=False
-        )
-
-    except KeyboardInterrupt:
-        print("\n[!] Reverse Engineering dihentikan.")
-
-    except Exception as error:
-        print(f"\n[!] Error: {error}")
-
-    wait_enter()
-
-
 def show_cli_help():
     while True:
-
         clear_screen()
 
         print("""
@@ -285,15 +185,16 @@ def show_cli_help():
     [3] Disk Forensics
     [4] Pwn Toolkit
     [5] Reverse Engineering
+    [6] Malware Analyzer
 
-    [6] Kembali
+    [7] Kembali
 
 =============================================
 """)
 
         pilihan = input("Midoo Help > ").strip()
 
-        if pilihan == "6":
+        if pilihan == "7":
             break
 
         if pilihan not in CLI_TOOLS:
@@ -352,61 +253,70 @@ def show_menu():
     [13] Disk Forensics
     [14] Pwn Toolkit
     [15] Reverse Engineering
+    [16] Malware Analyzer
 
-    [16] Tool Help
-    [17] Exit
+    [17] Tool Help
+    [18] Exit
 
 =============================================
 """)
 
 
 def main():
-
     while True:
-
         clear_screen()
         show_menu()
 
         pilihan = input("Midoo > ").strip()
 
-        # VulnScope
         if pilihan == "11":
             run_vulnscope()
             continue
 
-        # Disk Forensics
         if pilihan == "13":
-            run_disk_forensics()
+            run_file_tool(
+                "13",
+                "Disk Forensics",
+                "file image"
+            )
             continue
 
-        # Pwn Toolkit
         if pilihan == "14":
-            run_pwn()
+            run_file_tool(
+                "14",
+                "Pwn Toolkit",
+                "binary"
+            )
             continue
 
-        # Reverse Engineering
         if pilihan == "15":
-            run_reverse_engineering()
+            run_file_tool(
+                "15",
+                "Reverse Engineering",
+                "binary"
+            )
             continue
 
-        # Tool Help
         if pilihan == "16":
+            run_file_tool(
+                "16",
+                "Malware Analyzer",
+                "file"
+            )
+            continue
+
+        if pilihan == "17":
             show_cli_help()
             continue
 
-        # Exit
-        if pilihan == "17":
+        if pilihan == "18":
             clear_screen()
             print("Midoo CTF Toolkit terminated.")
             break
 
-        # Tool biasa
         if pilihan in TOOLS:
-
             name, filename = TOOLS[pilihan]
-
             run_tool(name, filename)
-
             continue
 
         print("\n[!] Pilihan tidak valid.")
