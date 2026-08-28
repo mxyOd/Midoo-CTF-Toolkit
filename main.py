@@ -20,6 +20,7 @@ TOOLS = {
     "14": ("Pwn Toolkit", "pwn_tool.py"),
     "15": ("Reverse Engineering", "re_tool.py"),
     "16": ("Malware Analyzer", "malware_analyzer.py"),
+    "17": ("Memory Forensics", "memory_forensics.py"),
 }
 
 
@@ -30,6 +31,7 @@ CLI_TOOLS = {
     "4": ("Pwn Toolkit", "pwn_tool.py"),
     "5": ("Reverse Engineering", "re_tool.py"),
     "6": ("Malware Analyzer", "malware_analyzer.py"),
+    "7": ("Memory Forensics", "memory_forensics.py"),
 }
 
 
@@ -186,15 +188,16 @@ def show_cli_help():
     [4] Pwn Toolkit
     [5] Reverse Engineering
     [6] Malware Analyzer
+    [7] Memory Forensics
 
-    [7] Kembali
+    [8] Kembali
 
 =============================================
 """)
 
         pilihan = input("Midoo Help > ").strip()
 
-        if pilihan == "7":
+        if pilihan == "8":
             break
 
         if pilihan not in CLI_TOOLS:
@@ -254,9 +257,10 @@ def show_menu():
     [14] Pwn Toolkit
     [15] Reverse Engineering
     [16] Malware Analyzer
+    [17] Memory Forensics
 
-    [17] Tool Help
-    [18] Exit
+    [18] Tool Help
+    [19] Exit
 
 =============================================
 """)
@@ -269,10 +273,12 @@ def main():
 
         pilihan = input("Midoo > ").strip()
 
+        # VulnScope
         if pilihan == "11":
             run_vulnscope()
             continue
 
+        # Disk Forensics
         if pilihan == "13":
             run_file_tool(
                 "13",
@@ -281,6 +287,7 @@ def main():
             )
             continue
 
+        # Pwn Toolkit
         if pilihan == "14":
             run_file_tool(
                 "14",
@@ -289,6 +296,7 @@ def main():
             )
             continue
 
+        # Reverse Engineering
         if pilihan == "15":
             run_file_tool(
                 "15",
@@ -297,6 +305,7 @@ def main():
             )
             continue
 
+        # Malware Analyzer
         if pilihan == "16":
             run_file_tool(
                 "16",
@@ -305,15 +314,27 @@ def main():
             )
             continue
 
+        # Memory Forensics
         if pilihan == "17":
+            run_file_tool(
+                "17",
+                "Memory Forensics",
+                "memory dump"
+            )
+            continue
+
+        # Tool Help
+        if pilihan == "18":
             show_cli_help()
             continue
 
-        if pilihan == "18":
+        # Exit
+        if pilihan == "19":
             clear_screen()
             print("Midoo CTF Toolkit terminated.")
             break
 
+        # Tool biasa
         if pilihan in TOOLS:
             name, filename = TOOLS[pilihan]
             run_tool(name, filename)
