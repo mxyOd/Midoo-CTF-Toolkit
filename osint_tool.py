@@ -1,548 +1,580 @@
 #!/usr/bin/env python3
 
-import argparse
-import ipaddress
-import json
-import re
-import socket
-import ssl
-import urllib.error
-import urllib.parse
-import urllib.request
-from datetime import datetime
+import os
+import shutil
+import subprocess
+import sys
+import webbrowser
 
 
-USER_AGENT = "Midoo-CTF-Toolkit/1.0"
+TOOLS = {
+    "1": {
+        "name": "Sherlock",
+        "command": "sherlock",
+        "description": "Username OSINT"
+    },
+    "2": {
+        "name": "theHarvester",
+        "command": "theHarvester",
+        "description": "Domain / email / host OSINT"
+    },
+    "3": {
+        "name": "Shodan CLI",
+        "command": "shodan",
+        "description": "Internet-connected device search"
+    },
+    "4": {
+        "name": "Censys CLI",
+        "command": "censys",
+        "description": "Internet host and certificate search"
+    },
+    "5": {
+        "name": "Recon-ng",
+        "command": "recon-ng",
+        "description": "OSINT reconnaissance framework"
+    },
+    "6": {
+        "name": "SpiderFoot",
+        "command": "sf.py",
+        "description": "Automated OSINT reconnaissance"
+    },
+}
 
 
-def http_request(url, timeout=10):
-    try:
-        request = urllib.request.Request(
-            url,
-            headers={"User-Agent": USER_AGENT}
+WEB_TOOLS = {
+    "7": (
+        "OSINT HackUnderway",
+        "https://" + "osint.hackunderway.io/"
+    ),
+    "8": (
+        "Maltego",
+        "https://" + "www.maltego.com/"
+    ),
+    "9": (
+        "Google Dorking",
+        "https://www.google.com/search?q="
+    ),
+    "10": (
+        "IntelX",
+        "https://" + "intelx.io/"
+    ),
+    "11": (
+        "IntelBase",
+        "https://" + "intelbase.is/"
+    ),
+    "12": (
+        "ShadowDragon",
+        "https://" + "shadowdragon.io/"
+    ),
+    "13": (
+        "PhoneHunter",
+        "https://" + "phonehunter.io/"
+    ),
+}
+
+
+def clear_screen():
+    os.system(
+        "cls" if os.name == "nt" else "clear"
+    )
+
+
+def wait_enter():
+    input("\nTekan Enter untuk kembali...")
+
+
+def command_exists(command):
+    return shutil.which(command) is not None
+
+
+def check_tool(command):
+    if not command_exists(command):
+        print(
+            f"\n[!] Tool tidak ditemukan: {command}"
         )
 
-        context = ssl.create_default_context()
-
-        with urllib.request.urlopen(
-            request,
-            timeout=timeout,
-            context=context
-        ) as response:
-
-            body = response.read(200000)
-
-            return {
-                "status": response.status,
-                "url": response.geturl(),
-                "headers": dict(response.headers),
-                "body": body.decode(
-                    "utf-8",
-                    errors="replace"
-                )
-            }
-
-    except urllib.error.HTTPError as error:
-        return {
-            "status": error.code,
-            "url": error.geturl(),
-            "headers": dict(error.headers),
-            "body": ""
-        }
-
-    except Exception as error:
-        return {
-            "error": str(error)
-        }
-
-
-def normalize_url(value):
-    if not value.startswith(
-        ("http://", "https://")
-    ):
-        return "https://" + value
-
-    return value
-
-
-def dns_lookup(domain):
-    results = set()
-
-    try:
-        addresses = socket.getaddrinfo(
-            domain,
-            None
+        print(
+            "\n[*] Install tool tersebut terlebih dahulu "
+            "atau pastikan sudah ada di PATH."
         )
 
-        for item in addresses:
-            address = item[4][0]
-            results.add(address)
+        wait_enter()
+        return False
 
-    except socket.gaierror:
-        pass
-
-    return sorted(results)
+    return True
 
 
-def reverse_dns(ip):
+def run_command(command, arguments=None):
+    if arguments is None:
+        arguments = []
+
     try:
-        return socket.gethostbyaddr(ip)[0]
-
-    except (socket.herror, socket.gaierror):
-        return None
-
-
-def validate_ip(value):
-    try:
-        return ipaddress.ip_address(value)
-
-    except ValueError:
-        return None
-
-
-def whois_lookup(domain):
-    try:
-        import shutil
-        import subprocess
-
-        if not shutil.which("whois"):
-            return None
-
-        result = subprocess.run(
-            ["whois", domain],
-            capture_output=True,
-            text=True,
-            timeout=15,
+        subprocess.run(
+            [command] + arguments,
             check=False
         )
 
-        if result.returncode == 0:
-            return result.stdout
-
-    except Exception:
-        pass
-
-    return None
-
-
-def extract_technologies(headers, body):
-    technologies = set()
-
-    server = headers.get(
-        "Server",
-        ""
-    )
-
-    powered = headers.get(
-        "X-Powered-By",
-        ""
-    )
-
-    combined = (
-        server + " " +
-        powered + " " +
-        body[:100000]
-    ).lower()
-
-    signatures = {
-        "Nginx": [
-            "nginx"
-        ],
-        "Apache": [
-            "apache"
-        ],
-        "PHP": [
-            "php",
-            "x-powered-by: php"
-        ],
-        "WordPress": [
-            "wp-content",
-            "wp-includes"
-        ],
-        "React": [
-            "react"
-        ],
-        "Vue.js": [
-            "vue"
-        ],
-        "jQuery": [
-            "jquery"
-        ],
-        "Bootstrap": [
-            "bootstrap"
-        ],
-        "Cloudflare": [
-            "cloudflare"
-        ],
-    }
-
-    for name, patterns in signatures.items():
-        for pattern in patterns:
-            if pattern in combined:
-                technologies.add(name)
-                break
-
-    return sorted(technologies)
-
-
-def show_dns(domain):
-    print("\n[+] DNS Information")
-
-    addresses = dns_lookup(domain)
-
-    if not addresses:
-        print("  Tidak ditemukan address.")
-        return
-
-    for address in addresses:
-        print(f"  {address}")
-
-
-def show_ip_info(value):
-    ip = validate_ip(value)
-
-    if not ip:
+    except KeyboardInterrupt:
         print(
-            f"\n[!] IP tidak valid: {value}"
+            "\n\n[!] Tool dihentikan."
         )
+
+    except Exception as error:
+        print(
+            f"\n[!] Error: {error}"
+        )
+
+    wait_enter()
+
+
+def run_sherlock():
+    command = TOOLS["1"]["command"]
+
+    if not check_tool(command):
         return
 
-    print("\n[+] IP Information")
+    clear_screen()
 
-    print(f"  Address : {ip}")
-    print(f"  Version : IPv{ip.version}")
-    print(f"  Private : {ip.is_private}")
-    print(f"  Global  : {ip.is_global}")
-    print(f"  Loopback: {ip.is_loopback}")
+    print("""
+=============================================
+              Midoo Sherlock
+=============================================
+""")
 
-    hostname = reverse_dns(value)
+    username = input(
+        "Masukkan username: "
+    ).strip()
 
-    if hostname:
-        print(f"  Reverse : {hostname}")
-    else:
-        print("  Reverse : Tidak ditemukan")
-
-
-def show_headers(result):
-    print("\n[+] HTTP Information")
-
-    if "error" in result:
-        print(f"  Error: {result['error']}")
+    if not username:
+        print(
+            "\n[!] Username tidak boleh kosong."
+        )
+        wait_enter()
         return
 
     print(
-        f"  Status : {result.get('status', '-')}"
+        f"\n[*] Mencari username: {username}\n"
+    )
+
+    run_command(
+        command,
+        [username]
+    )
+
+
+def run_theharvester():
+    command = TOOLS["2"]["command"]
+
+    if not check_tool(command):
+        return
+
+    clear_screen()
+
+    print("""
+=============================================
+             Midoo theHarvester
+=============================================
+""")
+
+    domain = input(
+        "Masukkan domain: "
+    ).strip()
+
+    if not domain:
+        print(
+            "\n[!] Domain tidak boleh kosong."
+        )
+        wait_enter()
+        return
+
+    print("""
+Contoh source pasif:
+    crtsh
+    certspotter
+
+Gunakan source yang diperlukan saja.
+""")
+
+    source = input(
+        "Source [crtsh,certspotter]: "
+    ).strip()
+
+    if not source:
+        source = "crtsh,certspotter"
+
+    print(
+        "\n[*] Menjalankan theHarvester...\n"
+    )
+
+    run_command(
+        command,
+        [
+            "-d",
+            domain,
+            "-b",
+            source
+        ]
+    )
+
+
+def run_shodan():
+    command = TOOLS["3"]["command"]
+
+    if not check_tool(command):
+        return
+
+    clear_screen()
+
+    print("""
+=============================================
+              Midoo Shodan
+=============================================
+""")
+
+    print(
+        "Masukkan command Shodan setelah menu ini."
     )
 
     print(
-        f"  Final URL : {result.get('url', '-')}"
+        "\nContoh:"
     )
 
-    print("\n  Headers:")
+    print(
+        "  shodan -h"
+    )
 
-    for key, value in result.get(
-        "headers",
-        {}
-    ).items():
-        print(
-            f"    {key}: {value}"
-        )
+    print(
+        "  shodan info"
+    )
 
+    print(
+        "  shodan host <IP>"
+    )
 
-def show_security_headers(headers):
-    print("\n[+] Security Headers")
+    print()
 
-    security_headers = [
-        "Strict-Transport-Security",
-        "Content-Security-Policy",
-        "X-Frame-Options",
-        "X-Content-Type-Options",
-        "Referrer-Policy",
-        "Permissions-Policy",
-    ]
-
-    for header in security_headers:
-        value = headers.get(header)
-
-        if value:
-            print(
-                f"  [✓] {header}: {value}"
-            )
-        else:
-            print(
-                f"  [-] {header}: tidak ditemukan"
-            )
+    run_command(
+        command,
+        []
+    )
 
 
-def show_url_info(url):
-    parsed = urllib.parse.urlparse(url)
+def run_censys():
+    command = TOOLS["4"]["command"]
 
-    print("\n[+] URL Information")
-
-    print(f"  Scheme   : {parsed.scheme}")
-    print(f"  Host     : {parsed.hostname}")
-    print(f"  Port     : {parsed.port or '-'}")
-    print(f"  Path     : {parsed.path or '/'}")
-    print(f"  Query    : {parsed.query or '-'}")
-
-    if parsed.query:
-        parameters = urllib.parse.parse_qs(
-            parsed.query
-        )
-
-        print("\n  Parameters:")
-
-        for key in parameters:
-            print(f"    {key}")
-
-
-def show_username(username):
-    print("\n[+] Public Username Check")
-
-    platforms = {
-        "GitHub": (
-            "https://github.com/"
-            + urllib.parse.quote(username)
-        ),
-        "GitLab": (
-            "https://gitlab.com/"
-            + urllib.parse.quote(username)
-        ),
-    }
-
-    for platform, url in platforms.items():
-        result = http_request(url)
-
-        status = result.get("status")
-
-        if status == 200:
-            print(
-                f"  [✓] {platform}: kemungkinan tersedia"
-            )
-
-        elif status == 404:
-            print(
-                f"  [-] {platform}: tidak ditemukan"
-            )
-
-        else:
-            print(
-                f"  [?] {platform}: HTTP {status}"
-            )
-
-
-def show_whois(domain):
-    print("\n[+] WHOIS")
-
-    result = whois_lookup(domain)
-
-    if not result:
-        print(
-            "  WHOIS command tidak tersedia "
-            "atau lookup gagal."
-        )
+    if not check_tool(command):
         return
 
-    lines = result.splitlines()
+    clear_screen()
 
-    for line in lines[:100]:
-        print(f"  {line}")
+    print("""
+=============================================
+              Midoo Censys
+=============================================
+""")
+
+    print(
+        "[*] Membuka Censys CLI..."
+    )
+
+    print(
+        "[*] Gunakan -h untuk melihat command."
+    )
+
+    print()
+
+    run_command(
+        command,
+        []
+    )
+
+
+def run_recon_ng():
+    command = TOOLS["5"]["command"]
+
+    if not check_tool(command):
+        return
+
+    clear_screen()
+
+    print("""
+=============================================
+              Midoo Recon-ng
+=============================================
+""")
+
+    print(
+        "[*] Menjalankan Recon-ng...\n"
+    )
+
+    run_command(
+        command,
+        []
+    )
+
+
+def run_spiderfoot():
+    command = TOOLS["6"]["command"]
+
+    if not check_tool(command):
+        return
+
+    clear_screen()
+
+    print("""
+=============================================
+             Midoo SpiderFoot
+=============================================
+""")
+
+    print(
+        "[*] Menjalankan SpiderFoot..."
+    )
+
+    print(
+        "[*] SpiderFoot biasanya menyediakan "
+        "web interface lokal."
+    )
+
+    print()
+
+    run_command(
+        command,
+        [
+            "-l",
+            "127.0.0.1:5001"
+        ]
+    )
+
+
+def open_web_tool(name, url):
+    clear_screen()
+
+    print("=============================================")
+    print(f"              {name}")
+    print("=============================================\n")
+
+    print(
+        f"[*] Membuka {name} di browser..."
+    )
+
+    try:
+        webbrowser.open(url)
+
+    except Exception as error:
+        print(
+            f"\n[!] Gagal membuka browser: {error}"
+        )
+
+    wait_enter()
+
+
+def google_dorking():
+    clear_screen()
+
+    print("""
+=============================================
+             Midoo Google Dorking
+=============================================
+""")
+
+    print("""
+Contoh query:
+
+    site:example.com
+    site:example.com filetype:pdf
+    site:example.com inurl:login
+    site:example.com intitle:index.of
+
+Gunakan hanya pada domain yang memang
+berada dalam scope pengujian.
+""")
+
+    query = input(
+        "Masukkan dork: "
+    ).strip()
+
+    if not query:
+        print(
+            "\n[!] Query tidak boleh kosong."
+        )
+        wait_enter()
+        return
+
+    url = (
+        "https://www.google.com/search?q="
+        + query.replace(" ", "+")
+    )
+
+    open_web_tool(
+        "Google Dorking",
+        url
+    )
+
+
+def show_tool_status():
+    clear_screen()
+
+    print("""
+=============================================
+            Midoo OSINT Tool Status
+=============================================
+""")
+
+    for number, data in TOOLS.items():
+        command = data["command"]
+
+        if command_exists(command):
+            status = "[✓] Installed"
+        else:
+            status = "[-] Not Found"
+
+        print(
+            f"  [{number}] "
+            f"{data['name']:<20} "
+            f"{status}"
+        )
+
+    print(
+        "\n============================================="
+    )
+
+    wait_enter()
+
+
+def show_menu():
+    print("""
+=============================================
+            Midoo OSINT Toolkit
+                    v2.0
+=============================================
+
+  LOCAL / CLI TOOLS
+
+    [1]  Sherlock
+    [2]  theHarvester
+    [3]  Shodan CLI
+    [4]  Censys CLI
+    [5]  Recon-ng
+    [6]  SpiderFoot
+
+  WEB OSINT
+
+    [7]  OSINT HackUnderway
+    [8]  Maltego
+    [9]  Google Dorking
+    [10] IntelX
+    [11] IntelBase
+    [12] ShadowDragon
+    [13] PhoneHunter
+
+  UTILITY
+
+    [14] Tool Status
+    [0]  Exit
+
+=============================================
+""")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description=(
-            "Midoo OSINT Toolkit - "
-            "Passive Information Gathering"
-        )
-    )
+    while True:
+        clear_screen()
+        show_menu()
 
-    parser.add_argument(
-        "-d",
-        "--domain",
-        help="Analisis domain"
-    )
+        pilihan = input(
+            "Midoo OSINT > "
+        ).strip()
 
-    parser.add_argument(
-        "-i",
-        "--ip",
-        help="Analisis IP address"
-    )
-
-    parser.add_argument(
-        "-u",
-        "--url",
-        help="Analisis URL"
-    )
-
-    parser.add_argument(
-        "--username",
-        help="Check username pada platform publik"
-    )
-
-    parser.add_argument(
-        "--dns",
-        action="store_true",
-        help="Lakukan DNS lookup"
-    )
-
-    parser.add_argument(
-        "--whois",
-        action="store_true",
-        help="Lakukan WHOIS lookup"
-    )
-
-    parser.add_argument(
-        "--headers",
-        action="store_true",
-        help="Tampilkan HTTP headers"
-    )
-
-    parser.add_argument(
-        "--security-headers",
-        action="store_true",
-        help="Analisis security headers"
-    )
-
-    parser.add_argument(
-        "-o",
-        "--output",
-        help="Simpan hasil JSON"
-    )
-
-    args = parser.parse_args()
-
-    if not any(
-        [
-            args.domain,
-            args.ip,
-            args.url,
-            args.username,
-        ]
-    ):
-        parser.print_help()
-        return 1
-
-    print("=============================================")
-    print("             Midoo OSINT Toolkit")
-    print("                  v1.0")
-    print("=============================================\n")
-
-    report = {
-        "tool": "Midoo OSINT Toolkit",
-        "version": "1.0",
-        "timestamp": datetime.now().isoformat(),
-    }
-
-    if args.domain:
-        domain = args.domain.strip()
-
-        print("[+] Target Domain")
-        print(f"  {domain}")
-
-        report["domain"] = domain
-
-        if args.dns or not (
-            args.ip or
-            args.url or
-            args.username
-        ):
-            addresses = dns_lookup(domain)
-
-            report["dns"] = addresses
-
-            show_dns(domain)
-
-        if args.whois:
-            whois = whois_lookup(domain)
-
-            if whois:
-                report["whois"] = whois
-
-            show_whois(domain)
-
-    if args.ip:
-        ip = args.ip.strip()
-
-        show_ip_info(ip)
-
-        report["ip"] = ip
-
-    if args.url:
-        url = normalize_url(
-            args.url.strip()
-        )
-
-        show_url_info(url)
-
-        result = http_request(url)
-
-        report["url"] = url
-        report["http"] = {
-            "status": result.get("status"),
-            "final_url": result.get("url"),
-        }
-
-        if args.headers:
-            show_headers(result)
-
-        if args.security_headers:
-            show_security_headers(
-                result.get("headers", {})
-            )
-
-        technologies = extract_technologies(
-            result.get("headers", {}),
-            result.get("body", "")
-        )
-
-        if technologies:
-            print("\n[+] Technology Hints")
-
-            for technology in technologies:
-                print(
-                    f"  [✓] {technology}"
-                )
-
-            report["technologies"] = technologies
-
-    if args.username:
-        username = args.username.strip()
-
-        show_username(username)
-
-        report["username"] = username
-
-    if args.output:
-        try:
-            with open(
-                args.output,
-                "w",
-                encoding="utf-8"
-            ) as file:
-                json.dump(
-                    report,
-                    file,
-                    indent=4,
-                    ensure_ascii=False
-                )
+        if pilihan == "0":
+            clear_screen()
 
             print(
-                f"\n[✓] Report disimpan: "
-                f"{args.output}"
+                "Midoo OSINT Toolkit terminated."
             )
 
-        except OSError as error:
-            print(
-                f"\n[!] Gagal membuat report: {error}"
+            break
+
+        if pilihan == "1":
+            run_sherlock()
+            continue
+
+        if pilihan == "2":
+            run_theharvester()
+            continue
+
+        if pilihan == "3":
+            run_shodan()
+            continue
+
+        if pilihan == "4":
+            run_censys()
+            continue
+
+        if pilihan == "5":
+            run_recon_ng()
+            continue
+
+        if pilihan == "6":
+            run_spiderfoot()
+            continue
+
+        if pilihan == "7":
+            open_web_tool(
+                WEB_TOOLS["7"][0],
+                WEB_TOOLS["7"][1]
             )
+            continue
 
-    print("\n=============================================")
-    print("              ANALYSIS DONE")
-    print("=============================================")
+        if pilihan == "8":
+            open_web_tool(
+                WEB_TOOLS["8"][0],
+                WEB_TOOLS["8"][1]
+            )
+            continue
 
-    return 0
+        if pilihan == "9":
+            google_dorking()
+            continue
+
+        if pilihan == "10":
+            open_web_tool(
+                WEB_TOOLS["10"][0],
+                WEB_TOOLS["10"][1]
+            )
+            continue
+
+        if pilihan == "11":
+            open_web_tool(
+                WEB_TOOLS["11"][0],
+                WEB_TOOLS["11"][1]
+            )
+            continue
+
+        if pilihan == "12":
+            open_web_tool(
+                WEB_TOOLS["12"][0],
+                WEB_TOOLS["12"][1]
+            )
+            continue
+
+        if pilihan == "13":
+            open_web_tool(
+                WEB_TOOLS["13"][0],
+                WEB_TOOLS["13"][1]
+            )
+            continue
+
+        if pilihan == "14":
+            show_tool_status()
+            continue
+
+        print(
+            "\n[!] Pilihan tidak valid."
+        )
+
+        wait_enter()
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
