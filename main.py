@@ -23,6 +23,7 @@ TOOLS = {
     "17": ("Memory Forensics", "memory_forensics.py"),
     "18": ("Log Analyzer", "log_analyzer.py"),
     "19": ("Wordlist Toolkit", "wordlist_tool.py"),
+    "20": ("OSINT Toolkit", "osint_tool.py"),
 }
 
 
@@ -36,6 +37,7 @@ CLI_TOOLS = {
     "7": ("Memory Forensics", "memory_forensics.py"),
     "8": ("Log Analyzer", "log_analyzer.py"),
     "9": ("Wordlist Toolkit", "wordlist_tool.py"),
+    "10": ("OSINT Toolkit", "osint_tool.py"),
 }
 
 
@@ -209,17 +211,18 @@ def show_cli_help():
              Midoo Tool Help
 =============================================
 
-    [1] VulnScope
-    [2] API Tester
-    [3] Disk Forensics
-    [4] Pwn Toolkit
-    [5] Reverse Engineering
-    [6] Malware Analyzer
-    [7] Memory Forensics
-    [8] Log Analyzer
-    [9] Wordlist Toolkit
+    [1]  VulnScope
+    [2]  API Tester
+    [3]  Disk Forensics
+    [4]  Pwn Toolkit
+    [5]  Reverse Engineering
+    [6]  Malware Analyzer
+    [7]  Memory Forensics
+    [8]  Log Analyzer
+    [9]  Wordlist Toolkit
+    [10] OSINT Toolkit
 
-    [0] Kembali
+    [0]  Kembali
 
 =============================================
 """)
@@ -297,8 +300,9 @@ def show_menu():
     [17] Memory Forensics
     [18] Log Analyzer
     [19] Wordlist Toolkit
+    [20] OSINT Toolkit
 
-    [20] Tool Help
+    [21] Tool Help
     [0]  Exit
 
 =============================================
@@ -390,8 +394,16 @@ def main():
             )
             continue
 
-        # Tool Help
+        # OSINT Toolkit
         if pilihan == "20":
+            run_tool(
+                "OSINT Toolkit",
+                TOOLS["20"][1]
+            )
+            continue
+
+        # Tool Help
+        if pilihan == "21":
             show_cli_help()
             continue
 
