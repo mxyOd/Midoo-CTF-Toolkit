@@ -29,6 +29,7 @@ TOOLS = {
     "22": ("Container Security Toolkit", "container_security_tool.py"),
     "23": ("Mobile Security Toolkit", "mobile_security_tool.py"),
     "24": ("Database Forensics Toolkit", "database_forensics_tool.py"),
+    "25": ("Rentora Analyzer", "rentora_analyzer_v2.py"),
 }
 
 
@@ -47,6 +48,7 @@ CLI_TOOLS = {
     "12": ("Container Security Toolkit", "container_security_tool.py"),
     "13": ("Mobile Security Toolkit", "mobile_security_tool.py"),
     "14": ("Database Forensics Toolkit", "database_forensics_tool.py"),
+    "15": ("Rentora Analyzer", "rentora_analyzer_v2.py"),
 }
 
 
@@ -214,6 +216,65 @@ def run_vulnscope():
     wait_enter()
 
 
+def run_rentora():
+    filename = TOOLS["25"][1]
+
+    if not check_file(filename):
+        return
+
+    clear_screen()
+
+    print("=============================================")
+    print("              Midoo Rentora Analyzer")
+    print("=============================================")
+
+    target = input("\nMasukkan target URL: ").strip()
+
+    if not target:
+        print("\n[!] URL tidak boleh kosong.")
+        wait_enter()
+        return
+
+    print("""
+---------------------------------------------
+Mode:
+  [1] Scan halaman saja
+  [2] Scan + interactive booking form
+---------------------------------------------
+""")
+
+    mode = input("Pilih mode [1/2]: ").strip()
+
+    if mode not in ("1", "2"):
+        print("\n[!] Pilihan tidak valid.")
+        wait_enter()
+        return
+
+    command = [
+        sys.executable,
+        filename,
+        "-u",
+        target
+    ]
+
+    if mode == "2":
+        command.append("-i")
+
+    print("\n[*] Menjalankan Rentora Analyzer...\n")
+
+    try:
+        subprocess.run(
+            command,
+            check=False
+        )
+    except KeyboardInterrupt:
+        print("\n[!] Rentora Analyzer dihentikan.")
+    except Exception as error:
+        print(f"\n[!] Error: {error}")
+
+    wait_enter()
+
+
 def show_cli_help():
     while True:
         clear_screen()
@@ -323,8 +384,9 @@ def show_menu():
     [22] Container Security Toolkit
     [23] Mobile Security Toolkit
     [24] Database Forensics Toolkit
+    [25] Rentora Analyzer
 
-    [25] Tool Help
+    [26] Tool Help
     [0]  Exit
 
 =============================================
@@ -459,8 +521,13 @@ def main():
             )
             continue
 
-        # Tool Help
+        # Rentora Analyzer
         if pilihan == "25":
+            run_rentora()
+            continue
+
+        # Tool Help
+        if pilihan == "26":
             show_cli_help()
             continue
 
